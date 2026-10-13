@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#155eef">
+<title>Nexora International — Prototype v4</title>
+<style>
+:root{--blue:#155eef;--navy:#12306b;--pale:#eef4ff;--bg:#f5f7fb;--ink:#172033;--muted:#687386;--line:#e3e8f2;--white:#fff;--green:#14804a;--red:#c43232}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:linear-gradient(120deg,#1048c7,#3277ff);color:white;padding:18px 16px 22px;border-radius:0 0 22px 22px}
+.brand{font-size:24px;font-weight:850;letter-spacing:.2px}.brand span{color:#bcd2ff}.sub{opacity:.9;font-size:13px;margin-top:3px}
+.wrap{max-width:900px;margin:auto;padding:14px}.tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px;position:sticky;top:0;background:var(--bg);z-index:2}
+.tabs button{border:1px solid var(--line);background:white;color:#344054;padding:10px 13px;border-radius:12px;white-space:nowrap;font-weight:650}
+.tabs button.active{background:var(--blue);color:white;border-color:var(--blue)}
+h2{font-size:20px;margin:10px 0 14px}h3{font-size:15px;margin:0 0 10px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card{background:white;border:1px solid var(--line);border-radius:16px;padding:15px;box-shadow:0 3px 12px #10244d08}
+.metric{font-size:23px;font-weight:800;margin-top:6px;overflow-wrap:anywhere}.label{font-size:12px;color:var(--muted)}.note{font-size:12px;color:var(--muted);line-height:1.45}
+.panel{display:none}.panel.active{display:block}.row{display:flex;gap:10px;align-items:center;justify-content:space-between}.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+label{display:block;font-size:12px;color:#4d596b;font-weight:650;margin-bottom:5px}input,select,textarea{width:100%;border:1px solid #d6deeb;border-radius:10px;padding:11px;font:inherit;background:white;color:var(--ink);min-width:0}textarea{min-height:80px;resize:vertical}
+button.primary{background:var(--blue);color:white;border:0;border-radius:10px;padding:11px 14px;font-weight:750}button.secondary{background:var(--pale);color:var(--navy);border:1px solid #d5e2ff;border-radius:10px;padding:10px 12px;font-weight:700}button.danger{background:#fff0f0;color:var(--red);border:1px solid #ffd8d8;border-radius:9px;padding:7px 9px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.list{display:grid;gap:9px;margin-top:12px}.item{background:white;border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;gap:12px;justify-content:space-between;align-items:flex-start}.item strong{display:block}.tag{display:inline-block;background:var(--pale);color:var(--navy);font-size:11px;padding:4px 7px;border-radius:7px;margin-top:4px}.empty{padding:22px;text-align:center;color:var(--muted);border:1px dashed #cdd6e5;border-radius:12px}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:22px 8px}
+.smallbtn{font-size:12px}.full{grid-column:1/-1}.hidden{display:none!important}
+@media(min-width:650px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.wrap{padding:20px}.formgrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:390px){.formgrid{grid-template-columns:1fr}.metric{font-size:20px}}
+</style>
+</head>
+<body>
+<header><div class="brand">NEXORA<span>.</span></div><div class="sub">La gestion de votre activité, simplement.</div></header>
+<main class="wrap">
+<div class="card" style="margin-bottom:12px"><div class="formgrid"><div><label for="uiLanguage">Language / Langue</label><select id="uiLanguage"><option value="fr">Français</option><option value="en">English</option></select></div><div><label for="currencyChoice">Devise d’affichage / Display currency</label><select id="currencyChoice"><option value="XOF">FCFA (XOF)</option><option value="EUR">EUR (€)</option><option value="USD">USD ($)</option><option value="GBP">GBP (£)</option><option value="NGN">NGN (₦)</option><option value="GHS">GHS (GH₵)</option></select></div></div><p class="note" id="internationalNotice">Paramètres internationaux de démonstration. La conversion de devise n’est pas automatique : changer la devise ne convertit pas les montants déjà saisis.</p></div>
+<div class="tabs" id="tabs">
+<button class="active" data-tab="home">Accueil</button><button data-tab="sales">Ventes</button><button data-tab="stock">Stocks</button><button data-tab="clients">Clients & crédits</button><button data-tab="invoices">Factures</button><button data-tab="staff">Employés</button><button data-tab="expenses">Dépenses</button><button data-tab="assistant">Assistant IA</button>
+</div>
+<section class="panel active" id="home">
+<h2>Vue d'ensemble</h2>
+<div class="grid">
+<div class="card"><div class="label">Ventes enregistrées</div><div class="metric" id="mSales">0 FCFA</div></div>
+<div class="card"><div class="label">Bénéfice estimé</div><div class="metric" id="mProfit">0 FCFA</div></div>
+<div class="card"><div class="label">Produits en stock</div><div class="metric" id="mStock">0</div></div>
+<div class="card"><div class="label">Crédits à recouvrer</div><div class="metric" id="mDebt">0 FCFA</div></div>
+ <div class="card"><div class="label">Dépenses enregistrées</div><div class="metric" id="mExpenses">0 FCFA</div></div>
+ <div class="card"><div class="label">Résultat estimé après dépenses</div><div class="metric" id="mNet">0 FCFA</div></div>
+</div>
+<div class="card" style="margin-top:12px"><h3>Bienvenue dans Nexora</h3><p class="note">Cette première maquette vous permet de tester les fonctions essentielles sur votre téléphone. Les données restent dans le navigateur de cet appareil. Ajoutez d'abord quelques produits dans « Stocks », puis enregistrez vos ventes.</p><div class="actions"><button class="primary" onclick="tab('stock')">Ajouter un produit</button><button class="secondary" onclick="tab('sales')">Enregistrer une vente</button></div></div>
+<div class="card" style="margin-top:12px"><h3>À savoir</h3><p class="note">Prototype local : les données restent dans le navigateur de cet appareil et ne sont pas chiffrées par l’application. La connexion en ligne, les comptes sécurisés, la synchronisation cloud et le service IA réel ne sont pas encore déployés. N’y stocke pas de mots de passe ni de données sensibles. Exporte régulièrement une sauvegarde privée et garde-la dans un emplacement sûr.</p></div>
+</section>
+<section class="panel" id="sales">
+<h2>Enregistrer une vente</h2><div class="card">
+<form id="saleForm"><div class="formgrid">
+<div><label>Produit</label><select id="saleProduct" required></select></div>
+<div><label>Quantité</label><input id="saleQty" type="number" min="1" step="1" value="1" required></div>
+<div><label>Prix de vente unitaire (FCFA)</label><input id="salePrice" type="number" min="0" step="1" required></div>
+<div><label>Client (facultatif)</label><input id="saleClient" placeholder="Nom du client"></div>
+<div><label>Montant payé (FCFA)</label><input id="salePaid" type="number" min="0" step="1" value="0" required></div>
+</div><div class="actions"><button class="primary">Enregistrer la vente</button></div></form></div>
+<div class="row" style="margin-top:18px;flex-wrap:wrap"><h3>Historique des ventes</h3><div class="actions" style="margin-top:0"><button class="secondary smallbtn" onclick="exportData()">Exporter la sauvegarde</button><button class="secondary smallbtn" onclick="document.getElementById('importFile').click()">Restaurer une sauvegarde</button><input id="importFile" type="file" accept=".json,application/json" class="hidden"></div></div><p class="note">Conseil sécurité : exporte régulièrement une sauvegarde et conserve-la dans un endroit privé.</p><div id="salesList" class="list"></div>
+</section>
+<section class="panel" id="stock">
+<h2>Produits et stocks</h2><div class="card"><form id="productForm"><div class="formgrid">
+<div><label>Nom du produit</label><input id="pName" required placeholder="Ex. Savon"></div>
+<div><label>Quantité en stock</label><input id="pQty" type="number" min="0" step="1" required></div>
+<div><label>Coût d'achat unitaire (FCFA)</label><input id="pCost" type="number" min="0" step="1" required></div>
+<div><label>Prix de vente unitaire (FCFA)</label><input id="pPrice" type="number" min="0" step="1" required></div>
+</div><div class="actions"><button class="primary">Ajouter le produit</button></div></form></div><div id="stockList" class="list"></div>
+</section>
+<section class="panel" id="clients">
+<h2>Clients et crédits</h2><div class="card"><form id="clientForm"><div class="formgrid">
+<div><label>Nom du client</label><input id="cName" required></div><div><label>Téléphone (facultatif)</label><input id="cPhone" type="tel" placeholder="Numéro de téléphone"></div>
+<div><label>Dette initiale (FCFA)</label><input id="cDebt" type="number" min="0" step="1" value="0" required></div>
+</div><div class="actions"><button class="primary">Ajouter le client</button></div></form></div><div id="clientList" class="list"></div>
+</section>
+<section class="panel" id="invoices">
+<h2>Factures et reçus</h2><div class="card"><p class="note">Créez un reçu simple à partir d'une vente enregistrée. Vérifiez les obligations de facturation et de fiscalité applicables dans votre pays avant d'utiliser ces documents officiellement.</p><label>Choisir une vente</label><select id="invoiceSale"></select><div class="actions"><button class="primary" onclick="makeInvoice()">Afficher / imprimer le reçu</button></div></div><div id="invoiceOutput" style="margin-top:12px"></div>
+</section>
+<section class="panel" id="staff">
+<h2>Employés</h2><div class="card"><form id="staffForm"><div class="formgrid">
+<div><label>Nom de l'employé</label><input id="eName" required></div><div><label>Rôle</label><input id="eRole" required placeholder="Ex. Vendeur"></div><div><label>Téléphone (facultatif)</label><input id="ePhone" type="tel"></div>
+</div><div class="actions"><button class="primary">Ajouter l'employé</button></div></form></div><div id="staffList" class="list"></div></section>
+<section class="panel" id="expenses">
+ <h2>Dépenses de l’activité</h2>
+ <div class="card"><form id="expenseForm"><div class="formgrid">
+ <div><label>Libellé de la dépense</label><input id="xName" required placeholder="Ex. Transport, loyer"></div>
+ <div><label>Montant (FCFA)</label><input id="xAmount" type="number" min="1" step="1" required></div>
+ <div><label>Date</label><input id="xDate" type="date" required></div>
+ </div><div class="actions"><button class="primary">Enregistrer la dépense</button></div></form></div>
+ <div id="expenseList" class="list"></div>
+ <p class="note">Le résultat estimé correspond aux bénéfices bruts des ventes moins les dépenses saisies. Il ne remplace pas une comptabilité complète.</p>
+ </section>
+<section class="panel" id="assistant">
+<h2>Assistant de gestion</h2><div class="card"><p class="note">Cette version propose des conseils simples basés sur les données saisies. Elle n'est pas connectée à un modèle d'intelligence artificielle.</p><label>Que veux-tu savoir ?</label><textarea id="question" placeholder="Ex. Quels produits dois-je réapprovisionner ?"></textarea><div class="actions"><button class="primary" onclick="askAssistant()">Obtenir un conseil</button></div><div id="answer" class="card hidden" style="margin-top:12px;background:#f7f9ff"></div></div></section>
+<footer>Nexora International • Prototype v4 • Démonstration locale — pas encore un service en ligne</footer>
+</main>
+<script>
+const KEY='nexora_demo_v1';
+let db={products:[],sales:[],clients:[],staff:[],expenses:[]};
+try{const saved=localStorage.getItem(KEY);if(saved)db={...db,...JSON.parse(saved)}; if(!Array.isArray(db.expenses))db.expenses=[]}catch(e){}
+let currency = localStorage.getItem('nexora_currency') || 'XOF';
+const currencyLocales={XOF:'fr-FR',EUR:'fr-FR',USD:'en-US',GBP:'en-GB',NGN:'en-NG',GHS:'en-GH'};
+const fmt=n=>{try{return new Intl.NumberFormat(currencyLocales[currency]||'fr-FR',{style:'currency',currency,maximumFractionDigits:0}).format(Number(n)||0)}catch(e){return (Number(n)||0)+' '+currency}};
+document.getElementById('currencyChoice').value=currency;
+document.getElementById('currencyChoice').addEventListener('change',e=>{currency=e.target.value;localStorage.setItem('nexora_currency',currency);render()});
+const languageSelect=document.getElementById('uiLanguage');
+languageSelect.value=localStorage.getItem('nexora_language')||'fr';
+languageSelect.addEventListener('change',e=>{localStorage.setItem('nexora_language',e.target.value);document.getElementById('internationalNotice').textContent=e.target.value==='en'?'International demo settings. Currency conversion is not automatic: changing the currency does not convert amounts already entered.':'Paramètres internationaux de démonstration. La conversion de devise n’est pas automatique : changer la devise ne convertit pas les montants déjà saisis.';alert(e.target.value==='en'?'The English interface is planned; this prototype is still mainly in French.':'L’interface anglaise complète est prévue ; ce prototype est encore principalement en français.');});
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function save(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){alert('Le stockage local est indisponible. Exporte tes données régulièrement.')}render()}
+function tab(id){document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===id));document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));}
+document.querySelectorAll('#tabs button').forEach(b=>b.addEventListener('click',()=>tab(b.dataset.tab)));
+function render(){
+document.getElementById('mSales').textContent=fmt(db.sales.reduce((s,x)=>s+x.total,0));
+const grossProfit=db.sales.reduce((s,x)=>s+x.profit,0);
+document.getElementById('mProfit').textContent=fmt(grossProfit);
+const expenseTotal=db.expenses.reduce((s,x)=>s+x.amount,0);
+document.getElementById('mExpenses').textContent=fmt(expenseTotal);
+document.getElementById('mNet').textContent=fmt(grossProfit-expenseTotal);
+document.getElementById('mStock').textContent=db.products.reduce((s,x)=>s+x.qty,0);
+document.getElementById('mDebt').textContent=fmt(db.clients.reduce((s,x)=>s+x.debt,0)+db.sales.filter(x=>!String(x.client||'').trim()).reduce((s,x)=>s+Math.max(0,x.total-x.paid),0));
+const opts=db.products.map(p=>`<option value="${p.id}">${esc(p.name)} — stock: ${p.qty}</option>`).join('');
+document.getElementById('saleProduct').innerHTML=opts||'<option value="">Ajoute un produit d’abord</option>';
+document.getElementById('invoiceSale').innerHTML=db.sales.map(s=>`<option value="${s.id}">${esc(s.product)} — ${new Date(s.date).toLocaleDateString('fr-FR')} — ${fmt(s.total)}</option>`).join('')||'<option value="">Aucune vente</option>';
+document.getElementById('stockList').innerHTML=db.products.length?db.products.map(p=>`<div class="item"><div><strong>${esc(p.name)}</strong><div class="note">Stock : ${p.qty} • Achat : ${fmt(p.cost)} • Vente : ${fmt(p.price)}</div>${p.qty<=3?'<span class="tag">Stock faible</span>':''}</div><button class="danger" onclick="del('products','${p.id}')">Supprimer</button></div>`).join(''):'<div class="empty">Aucun produit. Ajoute ton premier article ci-dessus.</div>';
+document.getElementById('salesList').innerHTML=db.sales.length?[...db.sales].reverse().map(s=>`<div class="item"><div><strong>${esc(s.product)} × ${s.qty}</strong><div class="note">${new Date(s.date).toLocaleString('fr-FR')} • Client : ${esc(s.client||'Non précisé')}</div><span class="tag">Total : ${fmt(s.total)} • Payé : ${fmt(s.paid)} • Bénéfice estimé : ${fmt(s.profit)}</span></div><button class="danger" onclick="del('sales','${s.id}')">Supprimer</button></div>`).join(''):'<div class="empty">Aucune vente enregistrée.</div>';
+document.getElementById('clientList').innerHTML=db.clients.length?db.clients.map(c=>`<div class="item"><div><strong>${esc(c.name)}</strong><div class="note">${esc(c.phone||'Aucun téléphone')}</div><span class="tag">Dette : ${fmt(c.debt)}</span><div class="actions"><button class="secondary smallbtn" onclick="payDebt('${c.id}')">Enregistrer remboursement</button></div></div><button class="danger" onclick="del('clients','${c.id}')">Supprimer</button></div>`).join(''):'<div class="empty">Aucun client enregistré.</div>';
+document.getElementById('staffList').innerHTML=db.staff.length?db.staff.map(e=>`<div class="item"><div><strong>${esc(e.name)}</strong><div class="note">${esc(e.role)} • ${esc(e.phone||'Aucun téléphone')}</div></div><button class="danger" onclick="del('staff','${e.id}')">Supprimer</button></div>`).join(''):'<div class="empty">Aucun employé enregistré.</div>';
+document.getElementById('expenseList').innerHTML=db.expenses.length?[...db.expenses].reverse().map(x=>`<div class="item"><div><strong>${esc(x.name)}</strong><div class="note">${esc(x.date)}</div><span class="tag">${fmt(x.amount)}</span></div><button class="danger" onclick="del('expenses','${x.id}')">Supprimer</button></div>`).join(''):'<div class="empty">Aucune dépense enregistrée.</div>'; 
+}
+function del(type,id){
+  const item=db[type].find(x=>x.id===id);
+  if(!item)return;
+  if(type==='clients' && Number(item.debt)>0){
+    alert('Ce client a encore une dette enregistrée. Enregistre le remboursement ou règle la dette avant de supprimer sa fiche.');
+    return;
+  }
+  if(type==='sales'){
+    const remaining=Math.max(0,Number(item.total)-Number(item.paid));
+    const message='Supprimer cette vente ? Le stock sera rétabli si le produit existe encore et la dette associée sera ajustée.';
+    if(!confirm(message))return;
+    const product=db.products.find(p=>p.id===item.productId);
+    if(product)product.qty+=Number(item.qty)||0;
+    if(item.client && remaining>0){
+      const client=db.clients.find(c=>String(c.name).toLowerCase()===String(item.client).toLowerCase());
+      if(client)client.debt=Math.max(0,Number(client.debt||0)-remaining);
+    }
+    db.sales=db.sales.filter(x=>x.id!==id);
+    save();
+    return;
+  }
+  if(confirm('Supprimer cet élément ?')){db[type]=db[type].filter(x=>x.id!==id);save()}
+}
+document.getElementById('productForm').addEventListener('submit',e=>{e.preventDefault();db.products.push({id:crypto.randomUUID(),name:document.getElementById('pName').value.trim(),qty:+document.getElementById('pQty').value,cost:+document.getElementById('pCost').value,price:+document.getElementById('pPrice').value});e.target.reset();save()});
+document.getElementById('saleProduct').addEventListener('change',()=>{const p=db.products.find(x=>x.id===document.getElementById('saleProduct').value);if(p)document.getElementById('salePrice').value=p.price});
+document.getElementById('saleForm').addEventListener('submit',e=>{e.preventDefault();const p=db.products.find(x=>x.id===document.getElementById('saleProduct').value),qty=+document.getElementById('saleQty').value,price=+document.getElementById('salePrice').value,paid=+document.getElementById('salePaid').value;if(!p)return alert('Ajoute d’abord un produit.');if(qty>p.qty)return alert('Stock insuffisant.');if(!Number.isInteger(qty)||qty<1)return alert('La quantité doit être un nombre entier positif.');if(!Number.isFinite(price)||price<0)return alert('Saisis un prix valide.');if(paid>qty*price)return alert('Le montant payé ne peut pas dépasser le total.');if(paid<qty*price&&!document.getElementById('saleClient').value.trim())return alert('Indique le nom du client pour pouvoir suivre le crédit et ses remboursements.');const sale={id:crypto.randomUUID(),product:p.name,productId:p.id,qty,price,total:qty*price,cost:p.cost,profit:(price-p.cost)*qty,paid,client:document.getElementById('saleClient').value.trim(),date:new Date().toISOString()};p.qty-=qty;db.sales.push(sale);const cn=sale.client;if(cn&&sale.total>paid){let c=db.clients.find(x=>x.name.toLowerCase()===cn.toLowerCase());if(!c){c={id:crypto.randomUUID(),name:cn,phone:'',debt:0};db.clients.push(c)}c.debt+=sale.total-paid}e.target.reset();document.getElementById('saleQty').value=1;document.getElementById('salePaid').value=0;save();tab('sales')});
+document.getElementById('clientForm').addEventListener('submit',e=>{e.preventDefault();db.clients.push({id:crypto.randomUUID(),name:document.getElementById('cName').value.trim(),phone:document.getElementById('cPhone').value.trim(),debt:+document.getElementById('cDebt').value});e.target.reset();document.getElementById('cDebt').value=0;save()});
+function payDebt(id){const c=db.clients.find(x=>x.id===id);if(!c)return;const n=prompt('Montant du remboursement en FCFA. Dette actuelle : '+fmt(c.debt));if(n===null)return;const v=Number(n);if(!Number.isFinite(v)||v<=0)return alert('Saisis un montant valide.');c.debt=Math.max(0,c.debt-v);save()}
+document.getElementById('expenseForm').addEventListener('submit',e=>{e.preventDefault();db.expenses.push({id:crypto.randomUUID(),name:document.getElementById('xName').value.trim(),amount:+document.getElementById('xAmount').value,date:document.getElementById('xDate').value});e.target.reset();document.getElementById('xDate').value=new Date().toISOString().slice(0,10);save()});
+document.getElementById('xDate').value=new Date().toISOString().slice(0,10);
+document.getElementById('staffForm').addEventListener('submit',e=>{e.preventDefault();db.staff.push({id:crypto.randomUUID(),name:document.getElementById('eName').value.trim(),role:document.getElementById('eRole').value.trim(),phone:document.getElementById('ePhone').value.trim()});e.target.reset();save()});
+function makeInvoice(){const s=db.sales.find(x=>x.id===document.getElementById('invoiceSale').value);if(!s)return alert('Enregistre d’abord une vente.');document.getElementById('invoiceOutput').innerHTML=`<div class="card" id="receipt"><div class="row"><h3>NEXORA — Reçu de vente</h3><strong>#${esc(s.id.slice(0,8).toUpperCase())}</strong></div><p class="note">Date : ${new Date(s.date).toLocaleString('fr-FR')}</p><hr style="border:0;border-top:1px solid var(--line)"><p>Produit : <strong>${esc(s.product)}</strong></p><p>Quantité : ${s.qty}</p><p>Prix unitaire : ${fmt(s.price)}</p><p>Total : <strong>${fmt(s.total)}</strong></p><p>Montant payé : ${fmt(s.paid)}</p><p>Reste à payer : ${fmt(Math.max(0,s.total-s.paid))}</p><p class="note">Document de démonstration — à adapter aux exigences locales.</p><button class="primary" onclick="window.print()">Imprimer / enregistrer en PDF</button></div>`}
+function askAssistant(){const q=document.getElementById('question').value.toLowerCase(),out=document.getElementById('answer');let answer='';const low=db.products.filter(p=>p.qty<=3);if(q.includes('stock')||q.includes('réappro')||q.includes('produit'))answer=low.length?'Stocks faibles : '+low.map(p=>p.name+' ('+p.qty+')').join(', ')+'. Vérifie les ventes récentes avant de commander.':'Aucun produit n’a un stock de 3 unités ou moins. Continue à surveiller les produits qui se vendent le plus.';else if(q.includes('bénéfice')||q.includes('profit'))answer='Bénéfice brut estimé : '+fmt(db.sales.reduce((s,x)=>s+x.profit,0))+'. Dépenses saisies : '+fmt(db.expenses.reduce((s,x)=>s+x.amount,0))+'. Résultat estimé après ces dépenses : '+fmt(db.sales.reduce((s,x)=>s+x.profit,0)-db.expenses.reduce((s,x)=>s+x.amount,0))+'. Les dépenses oubliées, salaires, taxes et pertes non saisies ne sont pas inclus.';else if(q.includes('dette')||q.includes('crédit'))answer='Total des dettes clients enregistrées : '+fmt(db.clients.reduce((s,x)=>s+x.debt,0))+'. Contacte les clients avec tact et garde une trace de chaque remboursement.';else if(q.includes('vente')||q.includes('chiffre'))answer='Total des ventes enregistrées : '+fmt(db.sales.reduce((s,x)=>s+x.total,0))+'. Compare les périodes et les produits pour repérer les tendances.';else answer='Pour commencer, ajoute des produits et enregistre tes ventes. Je peux t’aider à examiner les stocks faibles, les bénéfices estimés, les ventes ou les crédits. Cet assistant est une aide simple, pas une IA connectée.';out.textContent=answer;out.classList.remove('hidden')}
+function exportData(){
+ const payload={app:'Nexora International',version:4,exportedAt:new Date().toISOString(),data:db};
+ const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download='nexora-sauvegarde-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function validBackup(d){
+ if(!d||typeof d!=='object')return false;
+ for(const k of ['products','sales','clients','staff','expenses'])if(!Array.isArray(d[k]))return false;
+ const numeric=(v)=>Number.isFinite(Number(v))&&Number(v)>=0;
+ if(!d.products.every(x=>x&&typeof x.name==='string'&&numeric(x.qty)&&numeric(x.cost)&&numeric(x.price)))return false;
+ if(!d.sales.every(x=>x&&typeof x.product==='string'&&numeric(x.qty)&&numeric(x.price)&&numeric(x.total)&&numeric(x.paid)&&numeric(x.profit)))return false;
+ if(!d.clients.every(x=>x&&typeof x.name==='string'&&numeric(x.debt)))return false;
+ if(!d.staff.every(x=>x&&typeof x.name==='string'&&typeof x.role==='string'))return false;
+ if(!d.expenses.every(x=>x&&typeof x.name==='string'&&numeric(x.amount)&&typeof x.date==='string'))return false;
+ return true;
+}
+document.getElementById('importFile').addEventListener('change',async e=>{
+ const file=e.target.files&&e.target.files[0];if(!file)return;
+ try{
+  if(file.size>5*1024*1024)throw new Error('Le fichier dépasse la limite de 5 Mo.');
+  const parsed=JSON.parse(await file.text()),candidate=parsed&&parsed.data?parsed.data:parsed;
+  if(!validBackup(candidate))throw new Error('Ce fichier ne ressemble pas à une sauvegarde Nexora valide.');
+  if(!confirm('Restaurer cette sauvegarde remplacera les données actuelles de Nexora. As-tu exporté les données actuelles si tu veux les garder ?'))return;
+  db={products:candidate.products,sales:candidate.sales,clients:candidate.clients,staff:candidate.staff,expenses:candidate.expenses};save();alert('Sauvegarde restaurée.');
+ }catch(err){alert('Restauration impossible : '+(err.message||'fichier invalide'));}finally{e.target.value='';}
+});
+render();
+</script>
+</body>
+</html>
